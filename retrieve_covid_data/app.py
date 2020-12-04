@@ -38,8 +38,21 @@ def lambda_handler(event, context):
         "https://api.covidactnow.org/v2/states.json",
         params={"apiKey": os.getenv("API_KEY")},
     ) as r, BytesIO(r.content) as payload:
-        if r.status_code == 200:
-            bucket.upload_fileobj(payload, "covid-retrieval-test.json")
+        try:
+            r.raise_for_status()
+            if r.ok:
+                bucket.upload_fileobj(payload, "covid-retrieval-test.json")
+            return {
+                "statusCode": 200,
+                "body": f"Update {'successful' if r.ok else 'failed'}, received status code {r.status_code}!",
+            }
+        except requests.exceptions.HTTPError as err:
+            return {
+                "statusCode": 500,
+                "body": f"Update unsuccessful, received response {err}"
+            }
+
+
 
     # Make updates to event payload, if desired
     # awsEvent.detail_type = "HelloWorldFunction updated event of " + awsEvent.detail_type
