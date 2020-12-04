@@ -34,7 +34,6 @@ def lambda_handler(event, context):
     # Execute business logic
     s3 = boto3.resource("s3")
     bucket = s3.Bucket("bigdata2bucket")
-    print(f"Api key: {os.getenv('API_KEY')}")
     with requests.get(
         "https://api.covidactnow.org/v2/states.json",
         params={"apiKey": os.getenv("API_KEY")},

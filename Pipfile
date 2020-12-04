@@ -11,9 +11,6 @@ pytest-mock = "*"
 requests = "*"
 six = "*"
 regex = "*"
-pandas = "*"
-numpy = "==1.19.3"
-python-dotenv = "*"
 boto3 = "*"
 
 [requires]
