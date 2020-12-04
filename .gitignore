@@ -328,3 +328,7 @@ dmypy.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/pydev,python,pycharm,eclipse,visualstudiocode,dotenv
+
+.aws-sam/
+
+env.json
