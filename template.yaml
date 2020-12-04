@@ -18,15 +18,12 @@ Resources:
       Handler: retrieve_covid_data/app.lambda_handler
       Runtime: python3.8
       Events:
-        HelloWorld:
-          Type: CloudWatchEvent # More info about CloudWatchEvent Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#cloudwatchevent
+        UpdateData:
+          Type: Schedule # More info about CloudWatchEvent Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#cloudwatchevent
           Properties:
             #EventBusName: your-event-bus-name #Uncomment this if your events are not on the 'default' event bus
-            Pattern:
-              source:
-                - aws.events
-              detail-type:
-                - Scheduled Event
+            Name: UpdateData
+            Schedule: 'cron(0 0 * * ? *)'
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
