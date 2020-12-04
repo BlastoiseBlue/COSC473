@@ -14,8 +14,8 @@ Resources:
   RetrieveCovidDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: retrieve_covid_data_function
-      Handler: retrieve_covid_data/app.lambda_handler
+      CodeUri: retrieve_covid_data
+      Handler: app.lambda_handler
       Runtime: python3.8
       Events:
         UpdateData:

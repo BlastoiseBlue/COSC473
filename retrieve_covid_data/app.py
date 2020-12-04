@@ -1,6 +1,6 @@
-from schema.aws.events.scheduledjson import Marshaller
-from schema.aws.events.scheduledjson import AWSEvent
-from schema.aws.events.scheduledjson import ScheduledEvent
+# from schema.aws.events.scheduledjson import Marshaller
+# from schema.aws.events.scheduledjson import AWSEvent
+# from schema.aws.events.scheduledjson import ScheduledEvent
 import boto3
 from io import BytesIO
 import requests
@@ -28,8 +28,8 @@ def lambda_handler(event, context):
     """
 
     # Deserialize event into strongly typed object
-    awsEvent: AWSEvent = Marshaller.unmarshall(event, AWSEvent)
-    detail: ScheduledEvent = awsEvent.detail
+    # awsEvent: AWSEvent = Marshaller.unmarshall(event, AWSEvent)
+    # detail: ScheduledEvent = awsEvent.detail
 
     # Execute business logic
     s3 = boto3.resource("s3")
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
             bucket.upload_fileobj(payload, "covid-retrieval-test.json")
 
     # Make updates to event payload, if desired
-    awsEvent.detail_type = "HelloWorldFunction updated event of " + awsEvent.detail_type
+    # awsEvent.detail_type = "HelloWorldFunction updated event of " + awsEvent.detail_type
 
     # Return event for further processing
-    return Marshaller.marshall(awsEvent)
+    # return Marshaller.marshall(awsEvent)

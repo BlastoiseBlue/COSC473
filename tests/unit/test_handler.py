@@ -1,6 +1,6 @@
 import pytest
 
-from hello_world import app
+from retrieve_covid_data import app
 from schema.aws.events.scheduledjson import AWSEvent
 from schema.aws.events.scheduledjson import ScheduledEvent
 from schema.aws.events.scheduledjson import Marshaller
