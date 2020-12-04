@@ -11,11 +11,11 @@ Globals:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
+  RetrieveCovidDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: hello_world_function
-      Handler: hello_world/app.lambda_handler
+      CodeUri: retrieve_covid_data_function
+      Handler: retrieve_covid_data/app.lambda_handler
       Runtime: python3.8
       Events:
         HelloWorld:
@@ -32,9 +32,9 @@ Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldFunction:
+  RetrieveCovidDataFunction:
     Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
+    Value: !GetAtt RetrieveCovidDataFunction.Arn
+  RetrieveCovidDataFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+    Value: !GetAtt RetrieveCovidDataFunctionRole.Arn

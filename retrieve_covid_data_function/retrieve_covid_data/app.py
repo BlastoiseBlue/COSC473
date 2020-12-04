@@ -1,6 +1,10 @@
 from schema.aws.events.scheduledjson import Marshaller
 from schema.aws.events.scheduledjson import AWSEvent
 from schema.aws.events.scheduledjson import ScheduledEvent
+import boto3
+from io import BytesIO
+import requests
+import os
 
 
 def lambda_handler(event, context):
@@ -28,6 +32,15 @@ def lambda_handler(event, context):
     detail: ScheduledEvent = awsEvent.detail
 
     # Execute business logic
+    s3 = boto3.resource("s3")
+    bucket = s3.Bucket("bigdata2bucket")
+    print(f"Api key: {os.getenv('API_KEY')}")
+    with requests.get(
+        "https://api.covidactnow.org/v2/states.json",
+        params={"apiKey": os.getenv("API_KEY")},
+    ) as r, BytesIO(r.content) as payload:
+        if r.status_code == 200:
+            bucket.upload_fileobj(payload, "covid-retrieval-test.json")
 
     # Make updates to event payload, if desired
     awsEvent.detail_type = "HelloWorldFunction updated event of " + awsEvent.detail_type
