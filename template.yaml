@@ -17,9 +17,12 @@ Resources:
       CodeUri: retrieve_covid_data
       Handler: app.lambda_handler
       Runtime: python3.8
+      Environment:
+        Variables:
+          SECRET_NAME: arn:aws:secretsmanager:us-east-1:703990240643:secret:Covid_Act_Now/Api_Key-NaB872
       Events:
         UpdateData:
-          Type: Schedule # More info about CloudWatchEvent Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#cloudwatchevent
+          Type: Schedule
           Properties:
             #EventBusName: your-event-bus-name #Uncomment this if your events are not on the 'default' event bus
             Name: UpdateData
