@@ -31,13 +31,13 @@ def lambda_handler(event, context):
         sec.get_secret_value(SecretId=os.environ["SECRET_NAME"]).get("SecretString")
     )
     with requests.get(
-        "https://api.covidactnow.org/v2/states.json",
+        "https://api.covidactnow.org/v2/states.csv",
         params={"apiKey": secret["API_KEY"]},
     ) as r, BytesIO(r.content) as payload:
         try:
             r.raise_for_status()
             if r.ok:
-                bucket.upload_fileobj(payload, "covid-retrieval-test.json")
+                bucket.upload_fileobj(payload, "covid-retrieval-test.csv")
             return {
                 "statusCode": 200,
                 "body": f"Update {'successful' if r.ok else 'failed'}, received status code {r.status_code}!",
