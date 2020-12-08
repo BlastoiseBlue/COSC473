@@ -6,12 +6,17 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-mock = "*"
+openpyxl = "*"
 
 [packages]
 requests = "*"
 six = "*"
 regex = "*"
 boto3 = "*"
+pandas = "*"
+numpy = "==1.19.3"
+fastparquet = "*"
+fsspec = "*"
 
 [requires]
 python_version = "3.8"
