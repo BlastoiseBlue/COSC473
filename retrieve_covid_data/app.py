@@ -29,8 +29,8 @@ def lambda_handler(event, context):
         sec.get_secret_value(SecretId=os.environ["SECRET_NAME"]).get("SecretString")
     )
     try:
-        target_counties = pd.read_parquet(
-            os.environ["COUNTY_LIST"], columns=["API FIPS"]
+        target_counties = pd.read_csv(
+            os.environ["COUNTY_LIST"], usecols=["API FIPS"]
         )["API FIPS"]
         dtypes = {
             "country": "category",
