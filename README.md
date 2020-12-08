@@ -1,5 +1,7 @@
 Originally made for COSC 473/573
+
 Our project background can be found at https://canvas.emich.edu/courses/51074/pages/project-background?module_item_id=2211636
+
 The proposal description can be found at https://canvas.emich.edu/courses/51074/assignments/862711
 
 
