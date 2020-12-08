@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     )
     try:
         target_counties = pd.read_parquet(
-            "s3://bigdata2bucket/county-list.parquet", columns=["API FIPS"]
+            os.environ["COUNTY_LIST"], columns=["API FIPS"]
         )["API FIPS"]
         dtypes = {
             "country": "category",
@@ -42,8 +42,13 @@ def lambda_handler(event, context):
             f"https://api.covidactnow.org/v2/counties.csv?apiKey={secret['API_KEY']}",
             dtype=dtypes,
             index_col=["fips"],
-        ).sort_index().loc[target_counties].reset_index().to_csv("s3://bigdata2bucket/counties.csv")
+        ).sort_index().loc[target_counties].reset_index().to_csv(
+            os.environ["OUTPUT_FILE"]
+        )
     except HTTPError as err:
-        return {"statusCode": 500, "body": f"Update unsuccessful, received response {err}"}
+        return {
+            "statusCode": 500,
+            "body": f"Update unsuccessful, received response {err}",
+        }
     else:
         return {"statusCode": 200, "body": "Update successful!"}

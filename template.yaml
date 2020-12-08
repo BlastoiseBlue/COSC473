@@ -20,6 +20,8 @@ Resources:
       Environment:
         Variables:
           SECRET_NAME: arn:aws:secretsmanager:us-east-1:703990240643:secret:Covid_Act_Now/Api_Key-NaB872
+          COUNTY_LIST: "s3://bigdata2bucket/county-list.parquet"
+          OUTPUT_FILE: "s3://bigdata2bucket/counties.csv"
       Events:
         UpdateData:
           Type: Schedule
