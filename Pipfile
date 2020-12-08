@@ -7,15 +7,17 @@ verify_ssl = true
 pytest = "*"
 pytest-mock = "*"
 openpyxl = "*"
-pandas = "*"
-numpy = "==1.19.3"
-fsspec = "*"
 
 [packages]
 requests = "*"
 six = "*"
 regex = "*"
 boto3 = "*"
+pandas = "*"
+numpy = "==1.19.3"
+pyarrow = "*"
+fsspec = "*"
+s3fs = "==0.4.*"  # Version 0.5.* is incompatible with boto3
 
 [requires]
 python_version = "3.8"
