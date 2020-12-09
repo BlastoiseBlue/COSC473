@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 
 
 def lambda_handler(event, context):
-    """Sample Lambda function reacting to EventBridge events
+    """Retrieves data from an API and sends it to a bucket
 
     Parameters
     ----------
@@ -22,7 +22,7 @@ def lambda_handler(event, context):
 
     Returns
     ------
-        The same input event file
+        200 if the update succeeds, 500 otherwise
     """
     sec = boto3.client("secretsmanager", region_name="us-east-1")
     secret = json.loads(
@@ -30,8 +30,8 @@ def lambda_handler(event, context):
     )
     try:
         target_counties = pd.read_csv(
-            os.environ["COUNTY_LIST"], usecols=["API FIPS"]
-        )["API FIPS"]
+            os.environ["COUNTY_LIST"], index_col=os.environ["SEARCH_COLUMN"], usecols=[os.environ["SEARCH_COLUMN"]]
+        ).index
         dtypes = {
             "country": "category",
             "state": "category",
@@ -41,8 +41,8 @@ def lambda_handler(event, context):
         pd.read_csv(
             f"https://api.covidactnow.org/v2/counties.csv?apiKey={secret['API_KEY']}",
             dtype=dtypes,
-            index_col=["fips"],
-        ).sort_index().loc[target_counties].reset_index().to_csv(
+            index_col="fips",
+        ).sort_index().reindex(target_counties).to_csv(
             os.environ["OUTPUT_FILE"]
         )
     except HTTPError as err:
