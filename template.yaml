@@ -1,16 +1,41 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  COSC473
+  Covid Data Retriever
 
-  Sample SAM Template for COSC473
+  Designates resources used to retrieve a subset of data from Covid Act Now, storing it in a bucket.
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 30
 
+Parameters:
+  InputFile:
+    Type: String
+    Default: county-list.csv
+    Description: The name of the input file that holds the counties that the function will retrieve data for.
+  SearchColumn:
+    Type: String
+    Default: API FIPS
+  OutputFile:
+    Type: String
+    Default: counties.csv
+  ApiKeySecret:
+    Type: String
+    AllowedPattern: "^[a-zA-Z0-9]*$"
+    NoEcho: true
+    Description: The API key you'll be using to retrieve data from the API.
+
 Resources:
+  CovidDataBucket:
+    Type: AWS::S3::Bucket
+
+  CovidDataAPIKey:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      SecretString: !Sub '{"API_KEY": "${ApiKeySecret}"}'
+
   RetrieveCovidDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -19,9 +44,20 @@ Resources:
       Runtime: python3.8
       Environment:
         Variables:
-          SECRET_NAME: arn:aws:secretsmanager:us-east-1:703990240643:secret:Covid_Act_Now/Api_Key-NaB872
-          COUNTY_LIST: "s3://bigdata2bucket/county-list.csv"
-          OUTPUT_FILE: "s3://bigdata2bucket/counties.csv"
+          SECRET_NAME: !Ref CovidDataAPIKey
+          COUNTY_LIST: !Join
+              - ""
+              - - "s3://"
+                - Ref: CovidDataBucket
+                - "/"
+                - Ref: InputFile
+          SEARCH_COLUMN: !Ref SearchColumn
+          OUTPUT_FILE: !Join
+              - ""
+              - - "s3://"
+                - Ref: CovidDataBucket
+                - "/"
+                - Ref: OutputFile
       Events:
         UpdateData:
           Type: Schedule
@@ -30,13 +66,35 @@ Resources:
             Name: UpdateData
             Schedule: 'cron(0 0 * * ? *)'
 
+  CovidDataUpdaterPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Ref RetrieveCovidDataFunctionRole
+      PolicyName: CovidDataUpdater
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+              - s3:PutObject
+              - secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              - !Join
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: CovidDataBucket
+                    - "/*"
+              - !Ref CovidDataAPIKey
+
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   RetrieveCovidDataFunction:
-    Description: "Hello World Lambda Function ARN"
+    Description: "Covid Data Retrieval Lambda Function ARN"
     Value: !GetAtt RetrieveCovidDataFunction.Arn
   RetrieveCovidDataFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
+    Description: "Implicit IAM Role created for data retrieval function"
     Value: !GetAtt RetrieveCovidDataFunctionRole.Arn
