@@ -6,8 +6,6 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-mock = "*"
-openpyxl = "*"
-pyarrow = "*"
 
 [packages]
 requests = "*"
